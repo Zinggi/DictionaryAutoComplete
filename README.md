@@ -15,11 +15,13 @@ Alternatively, you can add this entry to your 'Settings - User' to always show a
 
 Installation
 ------------
-**Very easy with [Package Control](http://wbond.net/sublime_packages/package_control) right inside Sublime Text 2 (Package Control needs to be installed):**
+not available yet. Use manual for now.
+<pre>**Very easy with [Package Control](http://wbond.net/sublime_packages/package_control) right inside Sublime Text 2 (Package Control needs to be installed):**
 
 1.	Ctrl + shift + P
 2.  Search for "inst", hit enter
 3.  Search for "DictionaryAutoComplete", hit enter
+</pre>
 
 **Manually (not recommended):**
 

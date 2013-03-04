@@ -51,9 +51,6 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
 
     # gets called when auto-completion pops up.
     def on_query_completions(self, view, prefix, locations):
-        completions = []
         scope_name = sublime.windows()[0].active_view().scope_name(sublime.windows()[0].active_view().sel()[0].begin())
         if "comment" in scope_name or "string.quoted" in scope_name:
-            return self.get_autocomplete_list(prefix)
-
-        return (completions, sublime.INHIBIT_EXPLICIT_COMPLETIONS)
+            return (self.get_autocomplete_list(prefix), sublime.INHIBIT_EXPLICIT_COMPLETIONS)

@@ -27,6 +27,10 @@ Installation
 2.	Put it into your Packages directory (find using 'Preferences' -> 'Browse Packages...')
 
 
+This was really easy to develop compared to [UnrealScript IDE](https://github.com/Zinggi/UnrealScriptIDE#unrealscript-ide-plug-in-for-sublime-text-2). If you still think I've earned a beer, there you go: :wink:  
+[![Donate](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XT5LYESK99ESA)
+
+
 * * *
 License
 ------------

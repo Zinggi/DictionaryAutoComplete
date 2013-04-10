@@ -3,13 +3,13 @@ Dictionary Auto-Complete
 
 ![Pic](http://www.mediafire.com/conv/192f62de03bd6fe2c26294faa932583c1a41bf47b48c96dd9dd41a9ac925277d6g.jpg)
 
-This plug-in adds auto-completion entries from the dictionary file if you are typing inside comments or in strings.
-Useful for very lazy typers or if you're searching for a particular word.
+This plug-in adds auto-completion entries from the dictionary file if you are typing inside **comments, strings or in text** files.
+Useful for very lazy typers like me or if you're searching for a particular word.
 
-In a comment or string, just type Ctrl + Space to show auto-completion.
+In a comment ,string or text file, just type **Ctrl + Space** to show auto-completion.
 
 
-Alternatively, you can add this entry to your 'Settings - User' to always show auto-completion, regardless where you're typing:
+Alternatively, you can add this entry to your **'Settings - User'** to **always show auto-completion**, regardless where you're typing:
 <pre>"auto_complete_selector": "source, text"</pre>
 
 

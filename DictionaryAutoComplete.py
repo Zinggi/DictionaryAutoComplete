@@ -26,7 +26,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
 
     def load_completions(self, view):
         scope_name = view.scope_name(view.sel()[0].begin())       # sublime.windows()[0].active_view()
-        if "comment" in scope_name or "string.quoted" in scope_name:
+        if self.should_trigger(scope_name):
             if not self.settings:
                 self.settings = sublime.load_settings('Preferences.sublime-settings')
 
@@ -56,8 +56,13 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
 
         return autocomplete_list
 
+    def should_trigger(self, scope):
+        if "comment" in scope or "string.quoted" in scope or "text" == scope[:4]:
+            return True
+        return False
+
     # gets called when auto-completion pops up.
     def on_query_completions(self, view, prefix, locations):
         scope_name = sublime.windows()[0].active_view().scope_name(sublime.windows()[0].active_view().sel()[0].begin())
-        if "comment" in scope_name or "string.quoted" in scope_name:
-            return (self.get_autocomplete_list(prefix), sublime.INHIBIT_EXPLICIT_COMPLETIONS)
+        if self.should_trigger(scope_name):
+            return self.get_autocomplete_list(prefix)

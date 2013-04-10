@@ -10,7 +10,7 @@ In a comment or string, just type Ctrl + Space to show auto-completion.
 
 
 Alternatively, you can add this entry to your 'Settings - User' to always show auto-completion, regardless where you're typing:
-<pre>"auto_complete_selector": "source"</pre>
+<pre>"auto_complete_selector": "source, text"</pre>
 
 
 Installation

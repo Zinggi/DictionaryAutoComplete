@@ -1,3 +1,4 @@
+# This Python file uses the following encoding: utf-8
 #-----------------------------------------------------------------------------------
 # Dictionary Auto-Complete
 #-----------------------------------------------------------------------------------
@@ -34,9 +35,9 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                 self.dict_path = self.dict_path.replace("/", "\\")
                 print self.dict_path
                 with open(self.dict_path, 'r') as dictionary:
-                    words = dictionary.read().split('\n')
+                    words = dictionary.read().decode('ISO-8859-1').split('\n')
                     for word in words:
-                        word = word.split('/')[0]
+                        word = word.split('/')[0].split('\t')[0]
                         self.word_list.append(word)
                 self.b_first_edit = False
         else:
@@ -45,13 +46,14 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
     # This will return all words found in the dictionary.
     def get_autocomplete_list(self, word):
         autocomplete_list = []
-
         # filter relevant items:
         for w in self.word_list:
             try:
                 if word.lower() in w.lower():
                     autocomplete_list.append((w, w))
             except UnicodeDecodeError:
+                print w
+                # autocomplete_list.append((w, w))
                 continue
 
         return autocomplete_list

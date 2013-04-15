@@ -19,7 +19,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
     b_fully_loaded = True
     word_list = []
 
-    # on first modification in comments, get the dictionary and save it.
+    # on first modification in comments, get the dictionary and save items.
     def on_modified(self, view):
         if self.b_first_edit and self.b_fully_loaded:
             self.b_fully_loaded = False
@@ -30,12 +30,11 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         if self.should_trigger(scope_name):
             if not self.settings:
                 self.settings = sublime.load_settings('Preferences.sublime-settings')
-
+                encoding = sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('encoding')
                 self.dict_path = os.path.join(sublime.packages_path()[:-9], self.settings.get('dictionary'))
                 self.dict_path = self.dict_path.replace("/", "\\")
-                print self.dict_path
                 with open(self.dict_path, 'r') as dictionary:
-                    words = dictionary.read().decode('ISO-8859-1').split('\n')
+                    words = dictionary.read().decode(encoding).split('\n')
                     for word in words:
                         word = word.split('/')[0].split('\t')[0]
                         self.word_list.append(word)

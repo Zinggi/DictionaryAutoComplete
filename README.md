@@ -6,11 +6,19 @@ Dictionary Auto-Complete
 This plug-in adds auto-completion entries from the dictionary file if you are typing inside **comments, strings or in text** files.
 Useful for very lazy typers like me or if you're searching for a particular word.
 
-In a comment ,string or text file, just type **Ctrl + Space** to show auto-completion.
+In a comment, string or text file, just type **Ctrl + Space** to show auto-completion.
 
 
 Alternatively, you can add this entry to your **'Settings - User'** to **always show auto-completion**, regardless where you're typing:
 <pre>"auto_complete_selector": "source, text"</pre>
+
+
+DictionaryAutoComplete takes the suggestions from the dictionary used for spell-checking, so if you want to use another dictionary,
+change <pre>"dictionary": "Packages/Language - English/en_US.dic"</pre> to your preferred dictionary.
+If you do so, you might also have to change the encoding setting under 'Preferences' -> 'Package Settings' -> 'DictionaryAutoComplete' -> 'Settings User' to the encoding of your dictionary file. (try UTF-8)
+<pre>{
+	"encoding": "ISO-8859-1"
+}</pre>
 
 
 Installation

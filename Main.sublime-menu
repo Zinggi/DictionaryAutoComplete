@@ -1,0 +1,44 @@
+[
+    {
+        "caption": "Preferences",
+        "id": "preferences",
+        "children": [
+            {
+                "caption": "Package Settings",
+                "id": "package-settings",
+                "children": [
+                    {
+                        "caption": "DictionaryAutoComplete",
+                        "id": "Dictionary_Auto_Complete",
+                        "children": [
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/DictionaryAutoComplete/README.md"
+                                },
+                                "caption": "Readme"
+                            },
+                            {
+                                "caption": "-"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/DictionaryAutoComplete/DictionaryAutoComplete.sublime-settings"
+                                },
+                                "caption": "Settings - Default"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/User/DictionaryAutoComplete.sublime-settings"
+                                },
+                                "caption": "Settings - User"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

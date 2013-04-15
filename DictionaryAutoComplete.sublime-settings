@@ -1,0 +1,4 @@
+{
+	// if you use another dictionary than the standard en_US set the encoding here to whatever your dictionary file uses.
+	"encoding": "ISO-8859-1"
+}

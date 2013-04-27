@@ -1,7 +1,7 @@
 Dictionary Auto-Complete
 ========================
 
-![Pic](http://www.mediafire.com/conv/192f62de03bd6fe2c26294faa932583c1a41bf47b48c96dd9dd41a9ac925277d6g.jpg)
+![Pic](https://lh3.googleusercontent.com/-x4YM7vJ1-W4/UXVsHF5l-oI/AAAAAAAAAVk/in3aQcg7jEI/s872/4.gif)
 
 This plug-in adds auto-completion entries from the dictionary file if you are typing inside **comments, strings or in text** files.
 Useful for very lazy typers like me or if you're searching for a particular word.

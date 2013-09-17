@@ -32,7 +32,6 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                 self.settings = sublime.load_settings('Preferences.sublime-settings')
                 encoding = sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('encoding')
                 self.dict_path = os.path.join(sublime.packages_path()[:-9], self.settings.get('dictionary'))
-                self.dict_path = self.dict_path.replace("/", "\\")
                 with open(self.dict_path, 'r') as dictionary:
                     words = dictionary.read().decode(encoding).split('\n')
                     for word in words:

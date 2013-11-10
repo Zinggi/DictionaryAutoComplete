@@ -12,6 +12,8 @@ import sublime
 import sublime_plugin
 
 ST3 = int(sublime.version()) > 3000
+if ST3:
+    import zipfile
 
 import os
 
@@ -34,14 +36,16 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
             if not self.settings:
                 self.settings = sublime.load_settings('Preferences.sublime-settings')
                 encoding = sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('encoding')
-                self.dict_path = os.path.join(sublime.packages_path()[:-9], self.settings.get('dictionary'))
                 if ST3:
-                    with open(self.dict_path, 'r', encoding = encoding) as dictionary:
-                        words = dictionary.read().split('\n')
-                        for word in words:
-                            word = word.split('/')[0].split('\t')[0]
-                            self.word_list.append(word)
+                    self.dict_path = os.path.join(sublime.packages_path()[:-13], '\\'.join(self.settings.get('dictionary').split('/')[:-1]))
+                    with zipfile.ZipFile(self.dict_path + ".sublime-package", "r") as zfile:
+                        with zfile.open(self.settings.get('dictionary').split('/')[-1], 'r') as dictionary:
+                            words = dictionary.read().decode(encoding).split('\n')
+                            for word in words:
+                                word = word.split('/')[0].split('\t')[0]
+                                self.word_list.append(word)
                 else:
+                    self.dict_path = os.path.join(sublime.packages_path()[:-9], self.settings.get('dictionary'))
                     with open(self.dict_path, 'r') as dictionary:
                         words = dictionary.read().decode(encoding).split('\n')
                         for word in words:

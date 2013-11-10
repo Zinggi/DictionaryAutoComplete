@@ -10,6 +10,9 @@
 #-----------------------------------------------------------------------------------
 import sublime
 import sublime_plugin
+
+ST3 = int(sublime.version()) > 3000
+
 import os
 
 
@@ -32,11 +35,18 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                 self.settings = sublime.load_settings('Preferences.sublime-settings')
                 encoding = sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('encoding')
                 self.dict_path = os.path.join(sublime.packages_path()[:-9], self.settings.get('dictionary'))
-                with open(self.dict_path, 'r', encoding = encoding) as dictionary:
-                    words = dictionary.read().split('\n')
-                    for word in words:
-                        word = word.split('/')[0].split('\t')[0]
-                        self.word_list.append(word)
+                if ST3:
+                    with open(self.dict_path, 'r', encoding = encoding) as dictionary:
+                        words = dictionary.read().split('\n')
+                        for word in words:
+                            word = word.split('/')[0].split('\t')[0]
+                            self.word_list.append(word)
+                else:
+                    with open(self.dict_path, 'r') as dictionary:
+                        words = dictionary.read().decode(encoding).split('\n')
+                        for word in words:
+                            word = word.split('/')[0].split('\t')[0]
+                            self.word_list.append(word)
                 self.b_first_edit = False
         else:
             self.b_fully_loaded = True

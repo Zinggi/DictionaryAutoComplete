@@ -23,7 +23,7 @@ If you do so, you might also have to change the encoding setting under 'Preferen
 
 Installation
 ------------
-**Very easy with [Package Control](http://wbond.net/sublime_packages/package_control) right inside Sublime Text 2 (Package Control needs to be installed):**
+**Very easy with [Package Control](http://wbond.net/sublime_packages/package_control) right inside Sublime Text 2/3 (Package Control needs to be installed):**
 
 1.	Ctrl + shift + P
 2.  Search for "inst", hit enter
@@ -42,7 +42,7 @@ This was really easy to develop compared to [UnrealScript IDE](https://github.co
 * * *
 License
 ------------
-Dictionary Auto-Complete for Sublime Text 2
+Dictionary Auto-Complete for Sublime Text 2/3
 Copyright (C) 2013 Florian Zinggeler
 
 This program is free software: you can redistribute it and/or modify

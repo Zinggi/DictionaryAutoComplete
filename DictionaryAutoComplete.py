@@ -57,7 +57,11 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         for w in self.word_list:
             try:
                 if word.lower() in w.lower():
-                    autocomplete_list.append((w, w))
+                    if word[0].isupper():
+                        W = w.title()
+                        autocomplete_list.append((W, W))
+                    else:
+                        autocomplete_list.append((w, w))
             except UnicodeDecodeError:
                 print(w)
                 # autocomplete_list.append((w, w))

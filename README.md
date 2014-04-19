@@ -19,7 +19,7 @@ If you do so, you might also have to change the encoding setting under 'Preferen
 <pre>{
 	"encoding": "ISO-8859-1"
 }</pre>
-
+After changing the encoding you'll have to **restart** Sublime!
 
 Installation
 ------------

@@ -57,7 +57,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         for w in self.word_list:
             try:
                 if word.lower() in w.lower():
-                    if word[0].isupper():
+                    if len(word) > 0 and word[0].isupper():
                         W = w.title()
                         autocomplete_list.append((W, W))
                     else:

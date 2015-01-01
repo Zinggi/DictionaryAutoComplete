@@ -35,14 +35,14 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                 self.settings = sublime.load_settings('Preferences.sublime-settings')
                 encoding = sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('encoding')
                 if ST3:
-                    words = sublime.load_binary_resource(self.settings.get('dictionary')).decode(encoding).split('\n')
+                    words = sublime.load_binary_resource(self.settings.get('dictionary')).decode(encoding).splitlines()
                     for word in words:
                         word = word.split('/')[0].split('\t')[0]
                         self.word_list.append(word)
                 elif not ST3:
                     self.dict_path = os.path.join(sublime.packages_path()[:-9], self.settings.get('dictionary'))
                     with open(self.dict_path, 'r') as dictionary:
-                        words = dictionary.read().decode(encoding).split('\n')
+                        words = dictionary.read().decode(encoding).splitlines()
                         for word in words:
                             word = word.split('/')[0].split('\t')[0]
                             self.word_list.append(word)

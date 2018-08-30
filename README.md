@@ -1,7 +1,7 @@
 Dictionary Auto-Complete
 ========================
 
-![Pic](https://lh3.googleusercontent.com/-x4YM7vJ1-W4/UXVsHF5l-oI/AAAAAAAAAVk/in3aQcg7jEI/s872/4.gif)
+![Pic](https://lh3.googleusercontent.com/7ka0khetxaP2EebgUvXE7SAIOAuRAA0rN5TMMCWq51iZlQ9KmBI2XaXnQPXI5mp6LavmXosuZhNW_FV7BG16OHeGo_WZLiXYgUt8NUz719VzZUkB0Dge_jrKtNK49Hkl8L7lb14eFzad-Hf7exqrdDmznk4YivkRNbwzbCp64sWsIYHFklTMBBS2vVGv7suNwXUGPNVm1zi0V7VoPCgsQL0TrlJDYEWV5MTG_OCn3Em6Sn4zIkS5hF-AMaweD0UyTAHQfh8_r4C1Q4q6JMwD9K5sjlhFJuOI1wsc_d8u-fuyAGo3z_9vZGwcXJBxGAMqEyYWI9b7EBu9Cq5YmxHx2FdI73IyjA47oZoxRnPD1xXdoMaxLrXoKJe3UQcbmTDzHdzukfETDPbEZ4khuGP9nUPOvShfUF9YAjeT0NtAmTJdvtEIP6e-dnzIX7r6LWNPLy4-j36DIyvtdWIRfgaSQ6V5qmYicclbAHVOyShlQDsjk947HqkVVvQYAyajLTIVNi79jkeh2IimMA52YOZwBLLH_fd3HcYNti3pPQDa7RfKsh-tP27lMA5AiCvjthClnRLdxA-gqCqUPmpveKYw24NsGyRt5Pu2DgXttqueJABkI0L6xyIS-UBDLjYgqA2Gvd8X0b4_lBFD5LSiryr_3kpM67S3url33aIOp024-rnugwUhiRm6PsdoKA=w872-h312-no)
 
 This plug-in adds auto-completion entries from the dictionary file if you are typing inside **comments, strings or in text** files.
 Useful for very lazy typers like me or if you're searching for a particular word.

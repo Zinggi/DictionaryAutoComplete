@@ -1,7 +1,16 @@
 {
 	// If you use another dictionary than the standard en_US,
 	// set the encoding here to whatever your dictionary file uses.
-	// Hint: Try "UTF-8"!
+	// Examples: "UTF-8", "ISO-8859-1"
 	// After you change this, you have to restart Sublime!
-	"encoding": "ISO-8859-1"
+	"encoding": {
+    "Bulgarian" : "UTF-8",
+    "en_US"     : "ISO-8859-1",
+    "en_GB"     : "ISO-8859-1",
+    "French"    : "UTF-8"
+  },
+  // insert the original autocomplete list "before", "after or "none"
+  "insert original": "before",
+  // the maximal number of suggestions
+  "max num results": 1000,
 }

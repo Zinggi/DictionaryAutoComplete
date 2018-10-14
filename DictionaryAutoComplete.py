@@ -12,13 +12,15 @@ import sublime
 import sublime_plugin
 import os
 
-ST3 = int(sublime.version()) > 3000
+ST3 = int(sublime.version()) >= 3000
+
+if not ST3:
+    from codecs import open
 
 class DictionaryAutoComplete(sublime_plugin.EventListener):
     settings = None
     request_load = True
     last_language = ""
-    print(last_language)
     word_list = []
     insert_original = False
     max_results = 0
@@ -26,7 +28,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
     # on first activation of the view, call load_completions asynchronously
     def on_activated_async(self, view):
         self.insert_original = sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('insert original',False)
-        self.max_results = int(sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('max num results',1000))
+        self.max_results = int(sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('maximum results',1000))
         if self.request_load:
             self.request_load = False
             sublime.set_timeout(lambda: self.load_completions(view), 3)
@@ -38,33 +40,43 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         language = os.path.splitext(os.path.basename(dictionary))[0]
         if self.last_language != language:
             self.last_language = language
-            encodings = sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('encoding',{})
-            encoding = encodings.get(language,'UTF-8')
-            print("Load dictionary : " + language + " [" + encoding + "]")
+            frequencies = sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('frequency',{})
+            frequency = frequencies.get(language,False)
+            if frequency:
+                dictionary = frequency
+                encoding = 'UTF-8'
+                print("[DictionaryAutoComplete] Load frequency dictionary: " + language)
+            else:
+                encodings = sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('encoding',{})
+                encoding = encodings.get(language,'UTF-8')
+                print("[DictionaryAutoComplete] Load dictionary: " + language + " [" + encoding + "]")
             if ST3:
-                words = sublime.load_binary_resource(dictionary).decode(encoding).splitlines()
+                self.word_list = sublime.load_binary_resource(dictionary).decode(encoding).splitlines()
             else: #ST2
-                self.dict_path = os.path.join(sublime.packages_path()[:-9], dictionary)
-                words = open(self.dict_path, 'r').read().decode(encoding).splitlines()
-            self.word_list = [word.split('/')[0].split('\t')[0] for word in words]
+                dict_path = os.path.join(sublime.packages_path()[:-9], dictionary)
+                self.word_list = open(dict_path, encoding=encoding, mode='r').read().splitlines()
+            if not frequency:
+                self.word_list = [word.split('/')[0].split('\t')[0] for word in self.word_list]
+            print("[DictionaryAutoComplete] Number of words: ",len(self.word_list))
+            print("[DictionaryAutoComplete] First ones: ",self.word_list[:10])
 
     # This will return all words found in the dictionary.
-    def get_autocomplete_list(self, view, word):
-        # prepare the word to search for
-        if not len(word):
+    def get_autocomplete_list(self, view, prefix):
+        # prepare the prefix to search for
+        if not len(prefix):
             return None
-        if word[0].isupper():
+        if prefix[0].isupper():
             def correctCase(x): return x.title()
         else:
             def correctCase(x): return x
-        word = word.lower()
+        prefix = prefix.lower()
 
         # filter relevant items:
         index = 0
         autocomplete_list = []
         for w in self.word_list:
             try:
-                if w.startswith(word):
+                if w.startswith(prefix):
                     w = correctCase(w)
                     autocomplete_list.append((w,w))
                     index = index +1
@@ -76,11 +88,11 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
 
         # append the original auto-complete list ?
         if self.insert_original == 'before':
-            autocomplete_list = view.extract_completions(word) + autocomplete_list
+            autocomplete_list = view.extract_completions(prefix) + autocomplete_list
         elif self.insert_original == 'after':
-            autocomplete_list = autocomplete_list + view.extract_completions(word)
+            autocomplete_list = autocomplete_list + view.extract_completions(prefix)
 
-        return autocomplete_list
+        return (autocomplete_list, sublime.INHIBIT_WORD_COMPLETIONS | sublime.INHIBIT_EXPLICIT_COMPLETIONS)
 
     def should_trigger(self, scope):
         if 'comment' in scope or 'string.quoted' in scope or 'text' == scope[:4]:
@@ -89,6 +101,6 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
 
     # gets called when auto-completion pops up.
     def on_query_completions(self, view, prefix, locations):
-        scope_name = sublime.windows()[0].active_view().scope_name(sublime.windows()[0].active_view().sel()[0].begin())
+        scope_name = view.scope_name(view.sel()[0].begin())
         if self.should_trigger(scope_name):
             return self.get_autocomplete_list(view, prefix)

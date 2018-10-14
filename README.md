@@ -13,13 +13,18 @@ Alternatively, you can add this entry to your **'Settings - User'** to **always 
 <pre>"auto_complete_selector": "source, text"</pre>
 
 
-DictionaryAutoComplete takes the suggestions from the dictionary used for spell-checking, so if you want to use another dictionary,
-change <pre>"dictionary": "Packages/Language - English/en_US.dic"</pre> to your preferred dictionary.
-If you do so, you might also have to change the encoding setting under 'Preferences' -> 'Package Settings' -> 'DictionaryAutoComplete' -> 'Settings User' to the encoding of your dictionary file. (try UTF-8)
-<pre>{
-	"encoding": "ISO-8859-1"
-}</pre>
-After changing the encoding you'll have to **restart** Sublime!
+DictionaryAutoComplete takes the suggestions from frequency dictionaries or the dictionary used for spell-checking, so if you want to use another dictionary, modify `DictionaryAutoComplete.sublime-settings` in the `Package Settings > DictionaryAutoComplete > Settings - User` menu.
+
+Settings
+--------
+
+For examples of how to use the settings look at the default `DictionaryAutoComplete.sublime-settings`.
+
+- `encoding`: set the standard dictionary encoding. It is used only if you do not set a frequency dictionnary for the corresponding language.
+- `frequency`: set the frequency dictionary to be used. For more information look at the [About the frequency dictionaries](#about-the-frequency-dictionaries) section.
+- `insert original`: indicate if the original auto-completion (containing the words of the current file) should be appended `before`, `after` or `none`.
+- `maximum results`: indicate the maximum auto-completion suggestions to return.
+
 
 Installation
 ------------
@@ -35,13 +40,22 @@ Installation
 2.	Put it into your Packages directory (find using 'Preferences' -> 'Browse Packages...')
 
 
-This was really easy to develop compared to [UnrealScript IDE](https://github.com/Zinggi/UnrealScriptIDE#unrealscript-ide-plug-in-for-sublime-text-2). If you still think I've earned a beer, there you go: :wink:  
+This was really easy to develop compared to [UnrealScript IDE](https://github.com/Zinggi/UnrealScriptIDE#unrealscript-ide-plug-in-for-sublime-text-2). If you still think I've earned a beer, there you go: :wink:
 [![Donate](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XT5LYESK99ESA)
 
+About the frequency dictionaries
+--------------------------------
+This package comes with frequency dictionaries obtained from [LuminosoInsight/wordfreq](https://github.com/LuminosoInsight/wordfreq) project.
+The corresponding dictionaries were transformed to `.txt` files with one word per line (the more frequents come first) by keeping only the words longer than 5 characters.
+
+The transformation use [jakm/msgpack-cli](https://github.com/jakm/msgpack-cli) tool to convert the `.msgpack` files to `.json` files, and then using `sed` and `grep` they are transformed to `.txt` files with one word per line.
+
+The `bash` script that do this is in the sub folder `freq_script`.
+The resulting frequency dictionaries are in the sub folder `freq_dicts`.
 
 * * *
 License
-------------
+-------
 Dictionary Auto-Complete for Sublime Text 2/3
 Copyright (C) 2013 Florian Zinggeler
 

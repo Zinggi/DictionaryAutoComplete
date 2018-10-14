@@ -9,8 +9,14 @@
     "en_GB"     : "ISO-8859-1",
     "French"    : "UTF-8"
   },
+  "frequency": {
+    "Bulgarian" : "Packages/DictionaryAutoComplete/freq_dicts/small_bg.txt",
+    "en_US"    : "Packages/DictionaryAutoComplete/freq_dicts/small_en.txt",
+    "en_GB"    : "Packages/DictionaryAutoComplete/freq_dicts/small_en.txt",
+    "French"    : "Packages/DictionaryAutoComplete/freq_dicts/large_fr.txt"
+  },
   // insert the original autocomplete list "before", "after or "none"
   "insert original": "before",
   // the maximal number of suggestions
-  "max num results": 1000,
+  "maximum results": 10000,
 }

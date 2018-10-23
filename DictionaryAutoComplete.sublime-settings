@@ -13,4 +13,6 @@
   "max num results": 1000,
   // The scopes where DictionaryAutoComplete is allowed.
   "scopes":["text", "comment", "string.quoted"],
+  // The minimal length to fire DictionaryAutoComplete
+  "minimal length": 1
 }

@@ -18,12 +18,14 @@ if not ST3:
 
 def plugin_loaded():
     print('[DictionaryAutoComplete] plug-in is loaded.')
+    # declar the settings parameters as global variables
+    global settings, insert_original, max_results, scopes, minimal_len
     # load all settings, for mor info look at the comments of 'DictionaryAutoComplete.sublime-settings'
-    global settings, insert_original, max_results, scopes
     settings = sublime.load_settings('DictionaryAutoComplete.sublime-settings')
     insert_original = settings.get('insert original', False)
     max_results = int(settings.get('maximum results', 1000))
     scopes = settings.get('maximum results', ["comment", "string.quoted", "text"])
+    minimal_len = settings.get('minimal length',1)
 
 class DictionaryAutoComplete(sublime_plugin.EventListener):
     request_load = True
@@ -59,7 +61,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
     # This will return all words found in the dictionary.
     def get_autocomplete_list(self, view, prefix):
         # prepare the prefix to search for
-        if not len(prefix):
+        if len(prefix) < minimal_len:
             return None # Nothing to complete
         if prefix[0].isupper():
             def correctCase(x): return x.title()

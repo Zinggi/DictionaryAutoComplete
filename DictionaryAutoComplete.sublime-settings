@@ -1,16 +1,16 @@
 {
-	// If you use another dictionary than the standard en_US,
-	// set the encoding here to whatever your dictionary file uses.
-	// Examples: "UTF-8", "ISO-8859-1"
+	// If you use a dictionary that is not UTF-8 set the encoding here.
+	// For example the default en_US dictionary is "ISO-8859-1".
 	// After you change this, you have to restart Sublime!
 	"encoding": {
-    "Bulgarian" : "UTF-8",
     "en_US"     : "ISO-8859-1",
     "en_GB"     : "ISO-8859-1",
-    "French"    : "UTF-8"
   },
-  // insert the original autocomplete list "before", "after or "none"
+  // Insert the original auto-complete list "before", "after", "none" or "default".
+  // If set to "default" let Sublime (or other completion plugging) to decide.
   "insert original": "before",
-  // the maximal number of suggestions
+  // The maximal number of suggestions returned by this plugging.
   "max num results": 1000,
+  // The scopes where DictionaryAutoComplete is allowed.
+  "scopes":["text", "comment", "string.quoted"],
 }

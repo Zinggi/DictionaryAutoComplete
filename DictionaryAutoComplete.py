@@ -31,7 +31,7 @@ def plugin_loaded():
 class DictionaryAutoComplete(sublime_plugin.EventListener):
     request_load = True
     last_language = ""
-    word_list = []
+    word_dict_list = {}
 
     # on first activation of the view, call load_completions asynchronously
     def on_activated_async(self, view):
@@ -49,21 +49,38 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
             encodings = sublime.load_settings('DictionaryAutoComplete.sublime-settings').get('encoding', {})
             encoding = encodings.get(language, 'UTF-8')
             print("[DictionaryAutoComplete] Load standard dictionary: " + language + " [" + encoding + "]")
-            if ST3:
-                self.word_list = sublime.load_binary_resource(dictionary).decode(encoding).splitlines()
-            else: #ST2
-                dict_path = os.path.join(sublime.packages_path()[:-9], dictionary)
-                self.word_list = open(dict_path, encoding=encoding, mode='r').read().splitlines()
-            self.word_list = [word.split('/')[0].split('\t')[0] for word in self.word_list]
-            print("[DictionaryAutoComplete] Number of words: ", len(self.word_list))
-            print("[DictionaryAutoComplete] First ones: ", self.word_list[:10])
+            try:
+                if ST3:
+                    words = sublime.load_binary_resource(dictionary).decode(encoding).splitlines()
+                else: #ST2
+                    dict_path = os.path.join(sublime.packages_path()[:-9], dictionary)
+                    words = open(dict_path, encoding=encoding, mode='r').read().splitlines()
+                words = [word.split('/')[0].split('\t')[0] for word in words]
+            except Exception as e:
+                print('[DictionaryAutoComplete] Error reding from dictionary : ' + e)
+
+            # optimise the list
+            del words[0:1]
+            words = [word for word in words if len(word) >= minimal_len]
+            # create dictionary of prefix -> list of words
+            self.word_dict_list = {}
+            for word in words:
+                pref = word[:minimal_len].lower()
+                if not pref in self.word_dict_list:
+                    self.word_dict_list[pref] = []
+                self.word_dict_list[pref].append(word)
+            print("[DictionaryAutoComplete] Number of words: ", len(words))
+            print("[DictionaryAutoComplete] First ones: ", words[:10])
+            print("[DictionaryAutoComplete] Nomber of prefixes of length ",minimal_len," : ", len(self.word_dict_list))
 
 
     # This will return all words found in the dictionary.
     def get_autocomplete_list(self, view, prefix):
         # prepare the prefix to search for
-        if prefix[0].isupper():
-            def correctCase(x): return x.title()
+        if prefix.istitle():
+            def correctCase(x): return x[:1].upper()+x[1:] if x.islower() else x
+        elif prefix.isupper():
+            def correctCase(x): return x.upper() if x.islower() else x
         else:
             def correctCase(x): return x
         prefix = prefix.lower()
@@ -71,17 +88,17 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         # filter relevant items:
         index = 0
         autocomplete_list = []
-        for w in self.word_list:
-            try:
-                if w.startswith(prefix):
+        pref = prefix[:minimal_len] # a lower case prefix to look in the dictionary
+        suff = prefix[minimal_len:] # a lower case suffixe to look in the list of words
+        prefix_length = len(prefix)
+        if pref in self.word_dict_list:
+            for w in self.word_dict_list[pref]:
+                if minimal_len == prefix_length or w[minimal_len:prefix_length].lower() == suff:
                     w = correctCase(w)
                     autocomplete_list.append((w,w))
                     index = index +1
                     if index > max_results:
                         break
-            except UnicodeDecodeError:
-                print('[DictionaryAutoComplete] Unicode error in ' + w)
-                continue
 
         # append the original auto-complete list ?
         preventDefault = False # by default (or for example if insert_original=='default')

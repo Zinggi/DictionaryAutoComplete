@@ -34,6 +34,15 @@ Installation
 1.  Clone or download this package
 2.	Put it into your Packages directory (find using 'Preferences' -> 'Browse Packages...')
 
+Configuration
+-------------
+You can customize the following parameters in (a copy in `User` package folder of) `DictionaryAutoComplete.sublime-settings` :
+- `encoding` : the dictionary encoding if not `UTF-8`
+- `insert original` : if the default auto-completion list should be used or not
+- `max num results` : the maximal number of results that this plug-in should return (for slower computer smaller number is better)
+- `scopes` : define the scopes where this plug-in is active
+- `minimal length` : the minimal length of a word to be completed (for slower computer you should play with this parameter to find what is optimal)
+- `forbidden prefixes` : this allow to not auto-complete after some characters, which can be useful for compatibility with other plug-ins
 
 * * *
 License

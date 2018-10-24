@@ -3,23 +3,18 @@ Dictionary Auto-Complete
 
 ![Pic](https://lh3.googleusercontent.com/7ka0khetxaP2EebgUvXE7SAIOAuRAA0rN5TMMCWq51iZlQ9KmBI2XaXnQPXI5mp6LavmXosuZhNW_FV7BG16OHeGo_WZLiXYgUt8NUz719VzZUkB0Dge_jrKtNK49Hkl8L7lb14eFzad-Hf7exqrdDmznk4YivkRNbwzbCp64sWsIYHFklTMBBS2vVGv7suNwXUGPNVm1zi0V7VoPCgsQL0TrlJDYEWV5MTG_OCn3Em6Sn4zIkS5hF-AMaweD0UyTAHQfh8_r4C1Q4q6JMwD9K5sjlhFJuOI1wsc_d8u-fuyAGo3z_9vZGwcXJBxGAMqEyYWI9b7EBu9Cq5YmxHx2FdI73IyjA47oZoxRnPD1xXdoMaxLrXoKJe3UQcbmTDzHdzukfETDPbEZ4khuGP9nUPOvShfUF9YAjeT0NtAmTJdvtEIP6e-dnzIX7r6LWNPLy4-j36DIyvtdWIRfgaSQ6V5qmYicclbAHVOyShlQDsjk947HqkVVvQYAyajLTIVNi79jkeh2IimMA52YOZwBLLH_fd3HcYNti3pPQDa7RfKsh-tP27lMA5AiCvjthClnRLdxA-gqCqUPmpveKYw24NsGyRt5Pu2DgXttqueJABkI0L6xyIS-UBDLjYgqA2Gvd8X0b4_lBFD5LSiryr_3kpM67S3url33aIOp024-rnugwUhiRm6PsdoKA=w872-h312-no)
 
-This plug-in adds auto-completion entries from the dictionary file if you are typing inside **comments, strings or in text** files.
+This plug-in adds auto-completion entries from the dictionary file.
 Useful for very lazy typers like me or if you're searching for a particular word.
 
-In a comment, string or text file, just type **Ctrl + Space** to show auto-completion.
+The default scopes where this plug-in is active are `comments`, `strings` and `text`. But you can customize them.
 
+Just type <kbd>Ctrl + Space</kbd> to show auto-completion, or allow auto-complete to **always show suggestions** by changing your **'Settings - User'** for example like this:
+```
+"auto_complete_selector": "text, comment, string"
+```
 
-Alternatively, you can add this entry to your **'Settings - User'** to **always show auto-completion**, regardless where you're typing:
-<pre>"auto_complete_selector": "source, text"</pre>
-
-
-DictionaryAutoComplete takes the suggestions from the dictionary used for spell-checking, so if you want to use another dictionary,
-change <pre>"dictionary": "Packages/Language - English/en_US.dic"</pre> to your preferred dictionary.
-If you do so, you might also have to change the encoding setting under 'Preferences' -> 'Package Settings' -> 'DictionaryAutoComplete' -> 'Settings User' to the encoding of your dictionary file. (try UTF-8)
-<pre>{
-	"encoding": "ISO-8859-1"
-}</pre>
-After changing the encoding you'll have to **restart** Sublime!
+DictionaryAutoComplete takes the suggestions from the dictionary used for spell-checking by default.
+But if you want you can set another one in the settings (for example a frequency dictionary).
 
 Installation
 ------------
@@ -37,18 +32,21 @@ Installation
 Configuration
 -------------
 You can customize the following parameters in (a copy in `User` package folder of) `DictionaryAutoComplete.sublime-settings` :
-- `encoding` : the dictionary encoding if not `UTF-8`
-- `insert original` : if the default auto-completion list should be used or not
-- `max num results` : the maximal number of results that this plug-in should return (for slower computer smaller number is better)
-- `scopes` : define the scopes where this plug-in is active
-- `minimal length` : the minimal length of a word to be completed (for slower computer you should play with this parameter to find what is optimal)
-- `forbidden prefixes` : this allow to not auto-complete after some characters, which can be useful for compatibility with other plug-ins
+- `encoding` : The dictionary encoding (like `"UTF-8"` or `"ISO-8859-1"`).
+- `insert original` : If the default auto-completion list should be used or not.
+- `max num results` : The maximal number of results that this plug-in should return (for slower computer smaller number is better).
+- `scopes` : Define the scopes where this plug-in is active.
+- `minimal length` : The minimal length of a word to be completed (for slower computer you should play with this parameter to find what is optimal).
+- `forbidden prefixes` : This allows to not auto-complete after some characters, which can be useful for compatibility with other plug-ins.
+- `languages` : A language specific settings. Here you can overwrite all the previous settings for a particular language. Here is also the place to set an alternative dictionary if you want.
+- `dictionary` : A path to alternative dictionary to use in place of the default dictionary used for spell-checking. This allows you for example to use a frequency dictionary that will show in first place the most used words.
 
 * * *
 License
 ------------
 Dictionary Auto-Complete for Sublime Text 2/3
 Copyright (C) 2013 Florian Zinggeler
+Copyright (C) 2018 Kroum Tzanev
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

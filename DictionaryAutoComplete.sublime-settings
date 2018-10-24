@@ -1,11 +1,8 @@
 {
-	// If you use a dictionary that is not UTF-8 set the encoding here.
-	// For example the default en_US dictionary is "ISO-8859-1".
-	// After you change this, you have to restart Sublime!
-	"encoding": {
-    "en_US"     : "ISO-8859-1",
-    "en_GB"     : "ISO-8859-1",
-  },
+
+  // ----------- default for all languages -----------
+  // This is the default encoding for all dictionaries
+  "encoding" : "UTF-8",
   // Insert the original auto-complete list "before", "after", "none" or "default".
   // If set to "default" let Sublime (or other completion plugging) to decide.
   "insert original": "before",
@@ -19,5 +16,17 @@
   // A list of characters after which DictionaryAutoComplete is not fired.
   // For example to prevent firing after `:` or `@` you can set
   // "forbidden prefixes": [":","@"]
-  "forbidden prefixes": []
+  "forbidden prefixes": [],
+  // --------------- language specific ---------------
+  "languages": {
+    "en_US"     : {
+      "encoding" : "ISO-8859-1",
+      // you can overwrite here the default dictionary
+      // for example by putting
+      // "dictionary" : "Packages/User/frequency_en.txt",
+    },
+    "en_GB"     : {
+      "encoding" : "ISO-8859-1",
+    }
+  }
 }

@@ -16,6 +16,9 @@
   // For example to prevent firing after `:` or `@` you can set
   // "forbidden prefixes": [":","@"]
   "forbidden prefixes": [],
+  // Set the debug level.
+  // example : "status, print"
+  "debug": "no",
   // --------------- language specific ---------------
   // Be careful : if you use "languages" for some language in your local settings the entire structure "languages" is redefined.
   "languages": {

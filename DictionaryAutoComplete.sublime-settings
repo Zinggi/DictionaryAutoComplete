@@ -1,13 +1,12 @@
 {
-
   // ----------- default for all languages -----------
   // This is the default encoding for all dictionaries
   "encoding" : "UTF-8",
   // Insert the original auto-complete list "before", "after", "none" or "default".
   // If set to "default" let Sublime (or other completion plugging) to decide.
-  "insert original": "before",
+  "insert original": "default",
   // The maximal number of suggestions returned by this plugging.
-  "max num results": 1000,
+  "maximum results": 10,
   // The scopes where DictionaryAutoComplete is allowed.
   "scopes":["text", "comment", "string.quoted"],
   // The minimal length to fire DictionaryAutoComplete.
@@ -18,15 +17,22 @@
   // "forbidden prefixes": [":","@"]
   "forbidden prefixes": [],
   // --------------- language specific ---------------
+  // Be careful : if you use "languages" for some language in your local settings the entire structure "languages" is redefined.
   "languages": {
-    "en_US"     : {
-      "encoding" : "ISO-8859-1",
+    "en_US": {
+      // this is the encoding for the default ST dictionary
+      "encoding": "ISO-8859-1",
       // you can overwrite here the default dictionary
       // for example by putting
       // "dictionary" : "Packages/User/frequency_en.txt",
     },
-    "en_GB"     : {
-      "encoding" : "ISO-8859-1",
+    "en_GB": {
+      // this is the encoding for the default ST dictionary
+      "encoding": "ISO-8859-1",
+    },
+    "French": {
+      // all characters in the same string are identified
+      "smash characters": ["eéèêë", "aàâä", "cç", "iîï", "oôö", "uùûü", "yÿ"]
     }
   }
 }

@@ -39,19 +39,19 @@ def get_setting(lang=None):
         if lang in languages:
             local_settings = languages[lang]
     if local_settings:
-        get_setting = lambda f,d: local_settings.get(f,global_settings.get(f, d))
+        get_parameter = lambda f,d: local_settings.get(f,global_settings.get(f, d))
     else:
-        get_setting = lambda f,d: global_settings.get(f, d)
+        get_parameter = lambda f,d: global_settings.get(f, d)
 
     # get the settings
-    dict_encoding = get_setting('encoding', 'UTF-8')
-    insert_original = get_setting('insert original', False)
-    max_results = int(get_setting('maximum results', 1000))
-    allowed_scopes = get_setting('scopes', ["comment", "string.quoted", "text"])
-    minimal_len = max(1, get_setting('minimal length', 1)) # never fire on zero length
-    forbidden_prefixes = get_setting('forbidden prefixes', [])
-    local_dictionary = get_setting('dictionary', None)
-    smash_characters = get_setting('smash characters', None)
+    dict_encoding = get_parameter('encoding', 'UTF-8')
+    insert_original = get_parameter('insert original', False)
+    max_results = int(get_parameter('maximum results', 1000))
+    allowed_scopes = get_parameter('scopes', ["comment", "string.quoted", "text"])
+    minimal_len = max(1, get_parameter('minimal length', 1)) # never fire on zero length
+    forbidden_prefixes = get_parameter('forbidden prefixes', [])
+    local_dictionary = get_parameter('dictionary', None)
+    smash_characters = get_parameter('smash characters', None)
 
     # set the smash function
     if smash_characters:
@@ -67,46 +67,49 @@ def plugin_loaded():
     This method is (automatically in ST3) loaded when the plug-in is ready.
     It reads the global variable `settings` from 'DictionaryAutoComplete.sublime-settings'.
     """
-    global global_settings, request_load, last_language, word_dict_list
+    global global_settings, first_activated, last_language, word_dict_list
 
-    print('[DictionaryAutoComplete] plug-in is loaded.')
+    print("[DictionaryAutoComplete] plug-in is loaded.")
 
     # Some global variables
-    request_load = True # used to avoid multiple calls of on_activated_async
+    first_activated = True # used to avoid multiple calls of on_activated_async
     last_language = "" # used to optimize the dictionary load in load_completions
     word_dict_list = {} # the entire dictionary as {"pref" : ["prefix", "Prefab", ...], ...}
     # load all settings from 'DictionaryAutoComplete.sublime-settings'
     global_settings = sublime.load_settings('DictionaryAutoComplete.sublime-settings')
     global_settings.add_on_change("languages",get_setting)
+    get_setting()
 
 class DictionaryAutoComplete(sublime_plugin.EventListener):
 
     def on_activated_async(self, view):
-        global request_load
+        global first_activated
         """
         Called by ST on the first activation of the view.
-        It calls load_completions asynchronously.
+        It calls `load_completions` asynchronously.
         """
-        if request_load:
-            request_load = False
-            sublime.set_timeout(lambda: self.load_completions(view), 3)
-            view.settings().add_on_change('dictionary', lambda: self.load_completions(view))
+        if first_activated:
+            first_activated = False
+            view.settings().add_on_change('dictionary', lambda: self.load_completions())
+        sublime.set_timeout(lambda: self.load_completions(), 3)
 
-    def load_completions(self, view):
+    def load_completions(self):
         """
-        Create the word_dict_list containing all the words of the dictionary.
-        The format of word_dict_list is
+        Create the `word_dict_list` containing all the words of the dictionary.
+        The format of `word_dict_list` is
             {"pref" : ["prefix", "Prefab", ...], ...}
         where the length of "pref" is determined by `minimal_len` global setting variable.
         This method is called on the first activation of the view and when the dictionary (language) is changed.
         If this method is called without a language change it simply returns.
         """
-        global last_language, word_dict_list
+        global last_language, word_dict_list, minimal_len
 
+        view = sublime.active_window().active_view()
         dictionary = view.settings().get('dictionary')
         if not dictionary:
             return
         language = os.path.splitext(os.path.basename(dictionary))[0]
+        view.set_status('DictionaryAutoComplete', '' + language + ' dictionary complete+' + str(minimal_len))
         if last_language != language:
             last_language = language
             get_setting(language)
@@ -123,7 +126,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                     words = open(dict_path, encoding=dict_encoding, mode='r').read().splitlines()
                 words = [word.split('/')[0].split('\t')[0] for word in words]
             except Exception as e:
-                print('[DictionaryAutoComplete] Error reading from dictionary:', e)
+                print("[DictionaryAutoComplete] Error reading from dictionary:", e)
 
             # optimize the list
             # the first line of .dic file is the number of words
@@ -148,7 +151,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
     def get_autocomplete_list(self, view, prefix):
         """
         Returns the auto-completion list.
-        In general it is called when the prefix has the minimal length.
+        It is called by on_query_completions when the prefix has the minimal length.
         And then it is called when ST consider that it is appropriate.
         In general it is not called on every key press.
         """

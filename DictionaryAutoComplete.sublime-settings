@@ -31,8 +31,8 @@
       "encoding": "ISO-8859-1",
     },
     "French": {
-      // all characters in the same string are identified
-      "smash characters": ["eéèêë", "aàâä", "cç", "iîï", "oôö", "uùûü", "yÿ"]
+      // all characters in the same string are treated as identical
+      "smash characters": ["eéèêëæ", "aàâä", "cç", "iîï", "oôöœ", "uùûü", "yÿ"]
     }
   }
 }

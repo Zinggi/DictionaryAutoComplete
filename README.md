@@ -39,7 +39,7 @@ You can customize the following parameters in (a copy in `User` package folder o
 - `minimal length` : The minimal length of a word to be completed (for slower computer you should play with this parameter to find what is optimal).
 - `forbidden prefixes` : This allows to not auto-complete after some characters, which can be useful for compatibility with other plug-ins.
 - `languages` : A language specific settings. Here you can overwrite all the previous settings for a particular language. Here is also the place to set an alternative dictionary if you want.
-- `dictionary` : A path to alternative dictionary to use in place of the default dictionary used for spell-checking. This allows you for example to use a frequency dictionary that will show in first place the most used words.
+- `dictionary` : A path to alternative dictionary to use in place of the default dictionary used for spell-checking. This allows you for example to use a [frequency dictionary](https://github.com/kpym/FrequencyDictionaries/tree/master/freq_dicts_clean) that will show in first place the most used words.
 - `smash characters`: Allows you to identify characters with accents in some languages. For example for French you can set
   ```
   "smash characters": ["eéèêë", "aàâä", "cç", "iîï", "oôö", "uùûü", "yÿ"]

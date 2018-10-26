@@ -40,11 +40,12 @@ You can customize the following parameters in (a copy in `User` package folder o
 - `forbidden prefixes` : This allows to not auto-complete after some characters, which can be useful for compatibility with other plug-ins.
 - `languages` : A language specific settings. Here you can overwrite all the previous settings for a particular language. Here is also the place to set an alternative dictionary if you want.
 - `dictionary` : A path to alternative dictionary to use in place of the default dictionary used for spell-checking. This allows you for example to use a frequency dictionary that will show in first place the most used words.
-- `smash characters`: Allows you to identify characters with accents in some languages. For example for french you can set
+- `smash characters`: Allows you to identify characters with accents in some languages. For example for French you can set
   ```
   "smash characters": ["eéèêë", "aàâä", "cç", "iîï", "oôö", "uùûü", "yÿ"]
   ```
   and then when you type "lecon" it will suggest you "leçon".
+- `numeric shortcuts`: Change the way auto complete behaves. All the choices are numbered and pressing a number select the corresponding completion. If you use this setting you should probably set `maximum results` to less than 10.
 - `reset on every key`: *[experimental]* By default ST do not refresh the auto-completion list on every key press.To overcome this we can force completion list refresh by first hiding then showing it. This is done when this setting is set to `true` (by default it is `false`).
 
 * * *

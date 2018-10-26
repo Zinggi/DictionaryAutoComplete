@@ -29,7 +29,7 @@ def get_setting(lang=None):
     All the setting variables are global (for this module).
     """
     # the settings as global variables
-    global dict_encoding, insert_original, max_results, allowed_scopes, minimal_len, forbidden_prefixes, local_dictionary, smash_characters, print_debug, reset_on_every_key
+    global dict_encoding, insert_original, max_results, allowed_scopes, minimal_len, forbidden_prefixes, local_dictionary, smash_characters, print_debug, reset_on_every_key, numeric_shorcuts
     # and some other global variables
     global global_settings, smash, last_language, debug
 
@@ -59,6 +59,7 @@ def get_setting(lang=None):
     smash_characters = get_parameter('smash characters', None)
     print_debug = get_parameter('debug', "status")
     reset_on_every_key = get_parameter('reset on every key', False)
+    numeric_shorcuts = get_parameter('numeric shortcuts', False)
 
     # set the smash function
     if smash_characters:
@@ -207,13 +208,15 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                 for w in word_dict_list[pref]:
                     if minimal_len == prefix_length or smash(w[minimal_len:prefix_length]) == suff:
                         w = correctCase(w)
-                        if prefix == w[:prefix_length]:
+                        if numeric_shorcuts:
+                            autocomplete_list.append((prefix + str(index) + '\t' + str(index) + ': ' + w, w)) # if numeric shortuct is asked
+                        elif prefix == w[:prefix_length]:
                             if len(w) == prefix_length:
-                                autocomplete_list.insert(0,(w, w)) # if exact word match
+                                autocomplete_list.insert(0, (w, w)) # if exact word match
                             else:
                                 autocomplete_list.append((w, w)) # if exact prefix match
                         else:
-                            autocomplete_list.append((prefix+'\t'+w, w)) # if smashed prefix match only
+                            autocomplete_list.append((prefix + '\t' + w, w)) # if smashed prefix match only
                         index = index +1
                         if index > max_results:
                             break
@@ -279,12 +282,19 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         To overcome this if we set "reset on every key: true" in the settings file,
         this methods force completion list refresh by first hiding then showing the auto-complete.
         """
-        if (not reset_on_every_key):
-            return
         current_location = view.sel()[0].end()
-        if view.is_auto_complete_visible() and self.is_scope_ok(view, current_location) and self.last_location+1==current_location:
-            view.run_command('hide_auto_complete')
-            view.run_command('auto_complete',{'disable_auto_insert': True})
+        if numeric_shorcuts:
+            if view.is_auto_complete_visible() and self.is_scope_ok(view, current_location):
+                try:
+                    ch = ord(view.substr(sublime.Region(current_location-1, current_location))) - ord('0')
+                    if ch >= 0 and ch <=9:
+                        view.run_command('commit_completion')
+                except:
+                    pass
+        elif reset_on_every_key:
+            if view.is_auto_complete_visible() and self.is_scope_ok(view, current_location) and self.last_location+1==current_location:
+                view.run_command('hide_auto_complete')
+                view.run_command('auto_complete',{'disable_auto_insert': True})
 
 
 # init the plug-in in ST2

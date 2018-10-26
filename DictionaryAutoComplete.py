@@ -29,7 +29,7 @@ def get_setting(lang=None):
     All the setting variables are global (for this module).
     """
     # the settings as global variables
-    global dict_encoding, insert_original, max_results, allowed_scopes, minimal_len, forbidden_prefixes, local_dictionary, smash_characters, print_debug
+    global dict_encoding, insert_original, max_results, allowed_scopes, minimal_len, forbidden_prefixes, local_dictionary, smash_characters, print_debug, reset_on_every_key
     # and some other global variables
     global global_settings, smash, last_language, debug
 
@@ -58,6 +58,7 @@ def get_setting(lang=None):
     local_dictionary = get_parameter('dictionary', None)
     smash_characters = get_parameter('smash characters', None)
     print_debug = get_parameter('debug', "status")
+    reset_on_every_key = get_parameter('reset on every key', False)
 
     # set the smash function
     if smash_characters:
@@ -69,8 +70,8 @@ def get_setting(lang=None):
         smash = lambda prefix: prefix.lower()
 
     if "print" in print_debug:
-        debug = lambda *args: print(*args)
-    debug("[DictionaryAutoComplete] Get parameters for", lang)
+        debug = lambda *args: print('[DictionaryAutoComplete]',*args)
+    debug("Get parameters for", lang)
 
 def plugin_loaded():
     """
@@ -79,7 +80,7 @@ def plugin_loaded():
     """
     global global_settings, first_activated, last_language, word_dict_list, force_reload
 
-    debug("[DictionaryAutoComplete] plug-in is loaded.")
+    debug("plug-in is loaded.")
 
     # Some global variables
     first_activated = True # used to avoid multiple calls of on_activated_async
@@ -92,6 +93,8 @@ def plugin_loaded():
     get_setting()
 
 class DictionaryAutoComplete(sublime_plugin.EventListener):
+
+    last_location = -2 # used only if "reset on every key" is set
 
     def on_activated_async(self, view):
         """
@@ -140,9 +143,9 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
             get_setting(language)
             if local_dictionary:
                 dictionary = local_dictionary
-                debug("[DictionaryAutoComplete] Load dictionary from ", dictionary, "[", dict_encoding, "]")
+                debug("Load dictionary from ", dictionary, "[", dict_encoding, "]")
             else:
-                debug("[DictionaryAutoComplete] Load standard dictionary: ", language, "[", dict_encoding, "]")
+                debug("Load standard dictionary: ", language, "[", dict_encoding, "]")
             try:
                 if ST3:
                     words = sublime.load_binary_resource(dictionary).decode(dict_encoding).splitlines()
@@ -151,7 +154,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                     words = open(dict_path, encoding=dict_encoding, mode='r').read().splitlines()
                 words = [word.split('/')[0].split('\t')[0] for word in words]
             except Exception as e:
-                debug("[DictionaryAutoComplete] Error reading from dictionary:", e)
+                debug("Error reading from dictionary:", e)
 
             # optimize the list
             # the first line of .dic file is the number of words
@@ -167,9 +170,9 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                 if not pref in word_dict_list:
                     word_dict_list[pref] = []
                 word_dict_list[pref].append(word)
-            debug("[DictionaryAutoComplete] Number of words: ", len(words))
-            debug("[DictionaryAutoComplete] First ones: ", words[:10])
-            debug("[DictionaryAutoComplete] Number of prefixes of length ", minimal_len, " : ", len(word_dict_list))
+            debug("Number of words: ", len(words))
+            debug("First ones: ", words[:10])
+            debug("Number of prefixes of length ", minimal_len, " : ", len(word_dict_list))
 
 
     # This will return all words found in the dictionary.
@@ -198,15 +201,19 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         # check the prefix length
         if prefix_length >= minimal_len:
             # filter relevant items
+            self.last_location = view.sel()[0].end() # used only if "reset on every key"
             index = 0
             if pref in word_dict_list:
                 for w in word_dict_list[pref]:
                     if minimal_len == prefix_length or smash(w[minimal_len:prefix_length]) == suff:
                         w = correctCase(w)
                         if prefix == w[:prefix_length]:
-                            autocomplete_list.append((w, w))
+                            if len(w) == prefix_length:
+                                autocomplete_list.insert(0,(w, w)) # if exact word match
+                            else:
+                                autocomplete_list.append((w, w)) # if exact prefix match
                         else:
-                            autocomplete_list.append((prefix+'\t'+w, w))
+                            autocomplete_list.append((prefix+'\t'+w, w)) # if smashed prefix match only
                         index = index +1
                         if index > max_results:
                             break
@@ -265,6 +272,20 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
             return None # Forbidden prefix
         # get the auto-completion list
         return self.get_autocomplete_list(view, prefix)
+
+    def on_modified_async(self,view):
+        """
+        By default ST do not call `on_query_completions` on every key press.
+        To overcome this if we set "reset on every key: true" in the settings file,
+        this methods force completion list refresh by first hiding then showing the auto-complete.
+        """
+        if (not reset_on_every_key):
+            return
+        current_location = view.sel()[0].end()
+        if view.is_auto_complete_visible() and self.is_scope_ok(view, current_location) and self.last_location+1==current_location:
+            view.run_command('hide_auto_complete')
+            view.run_command('auto_complete',{'disable_auto_insert': True})
+
 
 # init the plug-in in ST2
 if not ST3:

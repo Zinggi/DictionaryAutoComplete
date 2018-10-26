@@ -45,6 +45,7 @@ You can customize the following parameters in (a copy in `User` package folder o
   "smash characters": ["eéèêë", "aàâä", "cç", "iîï", "oôö", "uùûü", "yÿ"]
   ```
   and then when you type "lecon" it will suggest you "leçon".
+- `reset on every key`: *[experimental]* By default ST do not refresh the auto-completion list on every key press.To overcome this we can force completion list refresh by first hiding then showing it. This is done when this setting is set to `true` (by default it is `false`).
 
 * * *
 License

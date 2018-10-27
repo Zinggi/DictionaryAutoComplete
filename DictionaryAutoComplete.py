@@ -22,6 +22,17 @@ else:
 
 debug = lambda *args : None
 
+# numbers to display if `numeric shortcuts`
+CIRCLE_NUMBER = "⓿❶❷❸❹❺❻❼❽❾❿"
+
+# format the first element in an auto-complete tuple
+# in case of numeric shortcuts or to avoid '...' inserted by ST
+def to_display(prefix, word, index=None):
+    if numeric_shorcuts and index <= 9:
+        return prefix + str(index) + '\t' + '\u202f\u2009' + word + ' ' + CIRCLE_NUMBER[index] + '\u202f'
+    else:
+        return prefix + '\t' + '\u202f\u2009' + word + ' \u202f\u2009'
+
 def get_setting(lang=None):
     """
     Read all the settings from previously initialized global settings.
@@ -69,7 +80,9 @@ def get_setting(lang=None):
         smash = lambda prefix: prefix.lower().translate(smash_dic)
     else:
         smash = lambda prefix: prefix.lower()
-
+    # in case of numeric shorcuts limit the number of results
+    if numeric_shorcuts:
+        max_results = max(max_results,10)
     if "print" in print_debug:
         debug = lambda *args: print('[DictionaryAutoComplete]',*args)
     debug("Get parameters for", lang)
@@ -209,14 +222,14 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                     if minimal_len == prefix_length or smash(w[minimal_len:prefix_length]) == suff:
                         w = correctCase(w)
                         if numeric_shorcuts:
-                            autocomplete_list.append((prefix + str(index) + '\t' + str(index) + ': ' + w, w)) # if numeric shortuct is asked
+                            autocomplete_list.append((to_display(prefix,w,index), w)) # if numeric shortuct is asked
                         elif prefix == w[:prefix_length]:
                             if len(w) == prefix_length:
                                 autocomplete_list.insert(0, (w, w)) # if exact word match
                             else:
                                 autocomplete_list.append((w, w)) # if exact prefix match
                         else:
-                            autocomplete_list.append((prefix + '\t' + w, w)) # if smashed prefix match only
+                            autocomplete_list.append((to_display(prefix,w), w)) # if smashed prefix match only
                         index = index +1
                         if index > max_results:
                             break
@@ -228,7 +241,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
             autocomplete_list =  st_list + autocomplete_list
             preventDefault = True
         elif insert_original == 'after':
-            st_list = [(prefix+'\t'+w, w) for w in view.extract_completions(prefix) if smash(w[:prefix_length]) == prefix_smashed]
+            st_list = [(to_display(prefix,w), w) for w in view.extract_completions(prefix) if smash(w[:prefix_length]) == prefix_smashed]
             autocomplete_list = autocomplete_list + st_list
             preventDefault = True
         elif insert_original == 'none':

@@ -27,11 +27,11 @@ CIRCLE_NUMBER = "⓿❶❷❸❹❺❻❼❽❾❿"
 
 # format the first element in an auto-complete tuple
 # in case of numeric shortcuts or to avoid '...' inserted by ST
-def to_display(prefix, word, index=None):
-    if numeric_shorcuts and index <= 9:
-        return prefix + str(index) + '\t' + '\u202f\u2009' + word + ' ' + CIRCLE_NUMBER[index] + '\u202f'
+def to_display(prefix, word, n=None):
+    if numeric_shorcuts and n <= 9:
+        return prefix + str(n) + '\t' + '\u202f\u2009' + word + ' ' + CIRCLE_NUMBER[n] + '\u202f'
     else:
-        return prefix + '\t' + '\u202f\u2009' + word + ' \u202f\u2009'
+        return prefix + word[n:] + '\t' + '\u202f\u2009' + word + ' \u202f\u2009'
 
 def get_setting(lang=None):
     """
@@ -55,13 +55,13 @@ def get_setting(lang=None):
         if lang in languages:
             local_settings = languages[lang]
     if local_settings:
-        get_parameter = lambda f,d: local_settings.get(f,global_settings.get(f, d))
+        get_parameter = lambda f, d: local_settings.get(f,global_settings.get(f, d))
     else:
-        get_parameter = lambda f,d: global_settings.get(f, d)
+        get_parameter = lambda f, d: global_settings.get(f, d)
 
     # get the settings
     dict_encoding = get_parameter('encoding', 'UTF-8')
-    insert_original = get_parameter('insert original', False)
+    insert_original = get_parameter('insert original', 'default')
     max_results = int(get_parameter('maximum results', 1000))
     allowed_scopes = get_parameter('scopes', ["comment", "string.quoted", "text"])
     minimal_len = max(1, get_parameter('minimal length', 1)) # never fire on zero length
@@ -80,11 +80,12 @@ def get_setting(lang=None):
         smash = lambda prefix: prefix.lower().translate(smash_dic)
     else:
         smash = lambda prefix: prefix.lower()
-    # in case of numeric shorcuts limit the number of results
+    # in case of numeric shorcuts limit the number of results and is only for dictionary entries
     if numeric_shorcuts:
-        max_results = max(max_results,10)
+        max_results = min(max_results, 10)
+        insert_original = "none"
     if "print" in print_debug:
-        debug = lambda *args: print('[DictionaryAutoComplete]',*args)
+        debug = lambda *args: print('[DictionaryAutoComplete]', *args)
     debug("Get parameters for", lang)
 
 def plugin_loaded():
@@ -103,7 +104,7 @@ def plugin_loaded():
     # load all settings from 'DictionaryAutoComplete.sublime-settings'
     force_reload = False # set to true when the setings are changed
     global_settings = sublime.load_settings('DictionaryAutoComplete.sublime-settings')
-    global_settings.add_on_change("languages",get_setting)
+    global_settings.add_on_change("languages", get_setting)
     get_setting()
 
 class DictionaryAutoComplete(sublime_plugin.EventListener):
@@ -222,14 +223,14 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                     if minimal_len == prefix_length or smash(w[minimal_len:prefix_length]) == suff:
                         w = correctCase(w)
                         if numeric_shorcuts:
-                            autocomplete_list.append((to_display(prefix,w,index), w)) # if numeric shortuct is asked
+                            autocomplete_list.append((to_display(prefix, w, index), w)) # if numeric shortuct is asked
                         elif prefix == w[:prefix_length]:
                             if len(w) == prefix_length:
                                 autocomplete_list.insert(0, (w, w)) # if exact word match
                             else:
                                 autocomplete_list.append((w, w)) # if exact prefix match
                         else:
-                            autocomplete_list.append((to_display(prefix,w), w)) # if smashed prefix match only
+                            autocomplete_list.append((to_display(prefix, w, prefix_length), w)) # if smashed prefix match only
                         index = index +1
                         if index > max_results:
                             break
@@ -241,7 +242,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
             autocomplete_list =  st_list + autocomplete_list
             preventDefault = True
         elif insert_original == 'after':
-            st_list = [(to_display(prefix,w), w) for w in view.extract_completions(prefix) if smash(w[:prefix_length]) == prefix_smashed]
+            st_list = [(prefix+'\t'+w, w) for w in view.extract_completions(prefix) if smash(w[:prefix_length]) == prefix_smashed]
             autocomplete_list = autocomplete_list + st_list
             preventDefault = True
         elif insert_original == 'none':
@@ -289,7 +290,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         # get the auto-completion list
         return self.get_autocomplete_list(view, prefix)
 
-    def on_modified_async(self,view):
+    def on_modified_async(self, view):
         """
         By default ST do not call `on_query_completions` on every key press.
         To overcome this if we set "reset on every key: true" in the settings file,
@@ -307,7 +308,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         elif reset_on_every_key:
             if view.is_auto_complete_visible() and self.is_scope_ok(view, current_location) and self.last_location+1==current_location:
                 view.run_command('hide_auto_complete')
-                view.run_command('auto_complete',{'disable_auto_insert': True})
+                view.run_command('auto_complete', {'disable_auto_insert': True})
 
 
 # init the plug-in in ST2

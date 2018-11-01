@@ -123,7 +123,9 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
             This function is called when the settings are changed.
             When the languages settings are changed the reload is forced.
             """
-            global force_reload
+            global force_reload, plugin_is_active
+
+            plugin_is_active = sublime.active_window().active_view().settings().get("dictionary_auto_complete",True)
 
             force_reload = force
             self.load_completions()
@@ -151,7 +153,10 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
             return
         language = os.path.splitext(os.path.basename(dictionary))[0]
         if "status" in print_debug:
-            view.set_status('DictionaryAutoComplete', '' + language + ' dictionary complete+' + str(minimal_len))
+            if plugin_is_active:
+                view.set_status('DictionaryAutoComplete', '' + language + ' dictionary complete+' + str(minimal_len))
+            else:
+                view.set_status('DictionaryAutoComplete', 'dictionary complete is disabled')
         if last_language != language or force_reload:
             force_reload = False
             last_language = language
@@ -281,6 +286,8 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         In general it is not called on every key press but only when ST needs more items for list.
         Returns the result of get_autocomplete_list if DictionaryAutoComplete is allowed in this place.
         """
+        if not plugin_is_active:
+            return None # if DictionaryAutoComplete is forbidden
         # check if scope is allowed
         if not self.is_scope_ok(view, locations[0]):
             return None # Forbidden scope
@@ -296,6 +303,8 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         To overcome this if we set "reset on every key: true" in the settings file,
         this methods force completion list refresh by first hiding then showing the auto-complete.
         """
+        if not plugin_is_active:
+            return None # if DictionaryAutoComplete is forbidden
         current_location = view.sel()[0].end()
         if numeric_shorcuts:
             if view.is_auto_complete_visible() and self.is_scope_ok(view, current_location):

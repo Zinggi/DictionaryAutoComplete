@@ -1,0 +1,16 @@
+[
+  {
+    "caption": "Dictionary Auto Complete: Toggle",
+    "command": "toggle_setting",
+    "args": {
+      "setting": "dictionary_auto_complete"
+    }
+  },
+  {
+    "caption": "Auto Complete: Toggle",
+    "command": "toggle_setting",
+    "args": {
+      "setting": "auto_complete"
+    }
+  },
+]

@@ -48,6 +48,12 @@ You can customize the following parameters in (a copy in `User` package folder o
 - `numeric shortcuts`: Change the way auto complete behaves. All the choices are numbered and pressing a number select the corresponding completion. If you use this setting you should probably set `maximum results` to less than 10.
 - `reset on every key`: *[experimental]* By default ST do not refresh the auto-completion list on every key press.To overcome this we can force completion list refresh by first hiding then showing it. This is done when this setting is set to `true` (by default it is `false`).
 
+Commands
+--------
+Two commands are added in the Command Palette (<kbd>Ctrl+Shift+P</kbd>):
+- `Dictionary Auto Complete: Toggle` : Activate/deactivate this plug-in.
+- `Auto Complete: Toggle` : Activate/deactivate the sublime auto-completion.
+
 * * *
 License
 ------------

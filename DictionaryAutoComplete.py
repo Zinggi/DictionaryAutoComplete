@@ -27,12 +27,14 @@ CIRCLE_NUMBER = "⓿❶❷❸❹❺❻❼❽❾❿"
 
 # format the first element in an auto-complete tuple
 # in case of numeric shortcuts or to avoid '...' inserted by ST
-def to_display(prefix, word, n=None):
-    if numeric_shorcuts and n <= 9:
-        return prefix + str(n) + '\t' + '\u202f\u2009' + word + ' ' + CIRCLE_NUMBER[n] + '\u202f'
+def to_display(word, prefix=None, n=None):
+    if prefix:
+        if numeric_shorcuts and n <= 9:
+            return prefix + str(n) + '\t\u202f\u2009' + word + ' ' + CIRCLE_NUMBER[n] + '\u202f'
+        else:
+            return prefix + word[n:] + '\t\u202f\u2009' + word + ' ' + dictionary_symbol
     else:
-        return prefix + word[n:] + '\t' + '\u202f\u2009' + word + ' \u202f\u2009'
-
+        return word + '\t' + dictionary_symbol
 def get_setting(lang=None):
     """
     Read all the settings from previously initialized global settings.
@@ -40,7 +42,7 @@ def get_setting(lang=None):
     All the setting variables are global (for this module).
     """
     # the settings as global variables
-    global dict_encoding, insert_original, max_results, allowed_scopes, minimal_len, forbidden_prefixes, local_dictionary, smash_characters, print_debug, reset_on_every_key, numeric_shorcuts
+    global dict_encoding, insert_original, max_results, allowed_scopes, minimal_len, forbidden_prefixes, local_dictionary, smash_characters, print_debug, reset_on_every_key, numeric_shorcuts, dictionary_symbol
     # and some other global variables
     global global_settings, smash, last_language, debug
 
@@ -71,6 +73,7 @@ def get_setting(lang=None):
     print_debug = get_parameter('debug', "status")
     reset_on_every_key = get_parameter('reset on every key', False)
     numeric_shorcuts = get_parameter('numeric shortcuts', False)
+    dictionary_symbol = get_parameter('dictionary symbol', '🕮')
 
     # set the smash function
     if smash_characters:
@@ -228,14 +231,14 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                     if minimal_len == prefix_length or smash(w[minimal_len:prefix_length]) == suff:
                         w = correctCase(w)
                         if numeric_shorcuts:
-                            autocomplete_list.append((to_display(prefix, w, index), w)) # if numeric shortuct is asked
+                            autocomplete_list.append((to_display(w, prefix, index), w)) # if numeric shortuct is asked
                         elif prefix == w[:prefix_length]:
                             if len(w) == prefix_length:
-                                autocomplete_list.insert(0, (w, w)) # if exact word match
+                                autocomplete_list.insert(0, (to_display(w), w)) # if exact word match
                             else:
-                                autocomplete_list.append((w, w)) # if exact prefix match
+                                autocomplete_list.append((to_display(w), w)) # if exact prefix match
                         else:
-                            autocomplete_list.append((to_display(prefix, w, prefix_length), w)) # if smashed prefix match only
+                            autocomplete_list.append((to_display(w, prefix, prefix_length), w)) # if smashed prefix match only
                         index = index +1
                         if index > max_results:
                             break

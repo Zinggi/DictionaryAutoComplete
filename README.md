@@ -46,6 +46,7 @@ You can customize the following parameters in (a copy in `User` package folder o
   ```
   and then when you type "lecon" it will suggest you "leçon".
 - `numeric shortcuts`: Change the way auto complete behaves. All the choices are numbered and pressing a number select the corresponding completion. If you use this setting you should probably set `maximum results` to less than 10.
+- `dictionary symbol`: Is the symbol displayed on the right that is by default `🕮`. You can choose for example one of the Unicode book symbols: `📒`, `📓`, `📔`, `📕`, `📖`, `📗`, `📚`, `📜`, `🕮`.
 - `reset on every key`: *[experimental]* By default ST do not refresh the auto-completion list on every key press.To overcome this we can force completion list refresh by first hiding then showing it. This is done when this setting is set to `true` (by default it is `false`).
 
 Commands

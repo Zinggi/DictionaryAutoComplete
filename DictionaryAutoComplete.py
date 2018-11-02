@@ -318,7 +318,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                 except:
                     pass
         elif reset_on_every_key:
-            if view.is_auto_complete_visible() and self.is_scope_ok(view, current_location) and self.last_location+1==current_location:
+            if self.is_scope_ok(view, current_location) and (view.is_auto_complete_visible() or self.last_location == current_location+1):
                 view.run_command('hide_auto_complete')
                 view.run_command('auto_complete', {'disable_auto_insert': True})
 

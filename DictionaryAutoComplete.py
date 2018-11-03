@@ -27,12 +27,16 @@ CIRCLE_NUMBER = "⓿❶❷❸❹❺❻❼❽❾❿"
 
 # format the first element in an auto-complete tuple
 # in case of numeric shortcuts or to avoid '...' inserted by ST
+# Note:
+#   - '\u00a0' is the unicode character 'NO-BREAK SPACE'
+#   - '\u202f' is the unicode character 'NARROW NO-BREAK SPACE'
+#   - '\u2009' is the unicode character 'THIN SPACE'
 def to_display(word, prefix=None, n=None):
     if prefix:
         if numeric_shorcuts and n <= 9:
-            return prefix + str(n) + '\t\u202f\u2009' + word + ' ' + CIRCLE_NUMBER[n] + '\u202f'
+            return prefix + str(n) + '\t\u202f\u00a0' + word + '\u00a0' + CIRCLE_NUMBER[n] + '\u202f'
         else:
-            return prefix + word[n:] + '\t\u202f\u2009' + word + ' ' + dictionary_symbol
+            return prefix + word[n:] + '\t\u202f\u00a0' + word + '\u00a0' + dictionary_symbol
     else:
         return word + '\t' + dictionary_symbol
 def get_setting(lang=None):

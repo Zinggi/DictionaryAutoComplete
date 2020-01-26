@@ -5,6 +5,10 @@
   // Insert the original auto-complete list "before", "after", "none" or "default".
   // If set to "default" let Sublime (or other completion plugging) to decide.
   "insert original": "default",
+  // Insert the "ignored_words" section from the settings: "before", "after" or false.
+  "use ignored words": false,
+  // Insert the "added_words" section from the settings: "before", "after" or false.
+  "use added words": false,
   // The maximal number of suggestions returned by this plugging.
   "maximum results": 10,
   // The scopes where DictionaryAutoComplete is allowed.
@@ -18,6 +22,8 @@
   "forbidden prefixes": [],
   // Set the debug level.
   // example : "status, print"
+  // - "status" display info in the status bar
+  // - "print" print info in the python consol
   "debug": "no",
   // --------------- language specific ---------------
   // Be careful : if you use "languages" for some language in your local settings the entire structure "languages" is redefined.

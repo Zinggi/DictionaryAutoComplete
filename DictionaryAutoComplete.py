@@ -46,7 +46,7 @@ def get_setting(lang=None):
     All the setting variables are global (for this module).
     """
     # the settings as global variables
-    global dict_encoding, insert_original, max_results, allowed_scopes, minimal_len, forbidden_prefixes, local_dictionary, smash_characters, print_debug, reset_on_every_key, numeric_shorcuts, dictionary_symbol
+    global dict_encoding, insert_original, max_results, allowed_scopes, minimal_len, forbidden_prefixes, local_dictionary, use_ignored, use_added, smash_characters, print_debug, reset_on_every_key, numeric_shorcuts, dictionary_symbol
     # and some other global variables
     global global_settings, smash, last_language, debug
 
@@ -73,6 +73,8 @@ def get_setting(lang=None):
     minimal_len = max(1, get_parameter('minimal length', 1)) # never fire on zero length
     forbidden_prefixes = get_parameter('forbidden prefixes', [])
     local_dictionary = get_parameter('dictionary', None)
+    use_ignored = get_parameter('use ignored words', None)
+    use_added = get_parameter('use added words', None)
     smash_characters = get_parameter('smash characters', None)
     print_debug = get_parameter('debug', "status")
     reset_on_every_key = get_parameter('reset on every key', False)
@@ -93,6 +95,8 @@ def get_setting(lang=None):
         insert_original = "none"
     if "print" in print_debug:
         debug = lambda *args: print('[DictionaryAutoComplete]', *args)
+    else:
+        debug = lambda *args : None
     debug("Get parameters for", lang)
 
 def plugin_loaded():
@@ -152,7 +156,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
         This method is called on the first activation of the view and when the dictionary (language) is changed.
         If this method is called without a language change it simply returns.
         """
-        global last_language, word_dict_list, minimal_len, force_reload, print_debug
+        global last_language, word_dict_list, use_ignored, use_added, minimal_len, force_reload, print_debug
 
         view = sublime.active_window().active_view()
         dictionary = view.settings().get('dictionary')
@@ -183,6 +187,16 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
             except Exception as e:
                 debug("Error reading from dictionary:", e)
 
+            if use_ignored:
+                ignored_words = view.settings().get("ignored_words", [])
+                debug("use",len(ignored_words),"ignored words:",ignored_words[:7])
+                words = (ignored_words + words) if use_ignored == 'before' else (words + ignored_words)
+            if use_added:
+                added_words = view.settings().get("added_words", [])
+                debug("use",len(added_words),"added words:",added_words[:7])
+                words = (words + added_words) if use_added == 'after' else (added_words + words)
+
+
             # optimize the list
             # the first line of .dic file is the number of words
             if not local_dictionary:
@@ -198,7 +212,7 @@ class DictionaryAutoComplete(sublime_plugin.EventListener):
                     word_dict_list[pref] = []
                 word_dict_list[pref].append(word)
             debug("Number of words: ", len(words))
-            debug("First ones: ", words[:10])
+            debug("First ones: ", words[:7])
             debug("Number of prefixes of length ", minimal_len, " : ", len(word_dict_list))
 
 

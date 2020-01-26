@@ -34,6 +34,8 @@ Configuration
 You can customize the following parameters in (a copy in `User` package folder of) `DictionaryAutoComplete.sublime-settings` :
 - `encoding` : The dictionary encoding (like `"UTF-8"` or `"ISO-8859-1"`).
 - `insert original` : If the default auto-completion list should be used or not.
+- `use added words` : If `added_words` section of the settings should be used or not.
+- `use ignored words` : If `ignored_words` section of the settings should be used or not.
 - `maximum results` : The maximal number of results that this plug-in should return (for slower computer smaller number is better).
 - `scopes` : Define the scopes where this plug-in is active.
 - `minimal length` : The minimal length of a word to be completed (for slower computer you should play with this parameter to find what is optimal).

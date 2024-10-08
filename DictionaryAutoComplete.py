@@ -104,11 +104,12 @@ def plugin_loaded():
     This method is (automatically in ST3) loaded when the plug-in is ready.
     It reads the global variable `settings` from 'DictionaryAutoComplete.sublime-settings'.
     """
-    global global_settings, first_activated, last_language, word_dict_list, force_reload
+    global global_settings, plugin_is_active, first_activated, last_language, word_dict_list, force_reload
 
     debug("plug-in is loaded.")
 
     # Some global variables
+    plugin_is_active = False # if the plug-in is active (read from the view settings)
     first_activated = True # used to avoid multiple calls of on_activated_async
     last_language = "" # used to optimize the dictionary load in load_completions
     word_dict_list = {} # the entire dictionary as {"pref" : ["prefix", "Prefab", ...], ...}
